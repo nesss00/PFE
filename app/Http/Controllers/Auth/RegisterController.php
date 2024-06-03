@@ -25,9 +25,9 @@ class RegisterController extends Controller
 
         if($validated) {
             $newUser = User::create($validated);
-            
+
             Auth::login($newUser);
-    
+
             return redirect('/dashboard')->with([
                 'type' => 'success',
                 'message' => 'You are logged in.'
