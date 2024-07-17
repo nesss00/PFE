@@ -25,7 +25,7 @@ class StoreTypeCreditRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'typeCredit' => 'required|string|max:255',
+            'TypeCredit' => 'required|string|max:255',
             'TauxInteret' => 'required|numeric',
             'DuréeMax' => 'required|integer',
             'institution_id' => 'required|exists:institutions,id',

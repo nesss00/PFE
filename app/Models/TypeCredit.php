@@ -9,7 +9,7 @@ class TypeCredit extends Model
 {
     protected $fillable = [
         'name',
-        'typeCredit',
+        'TypeCredit',
         'TauxInteret',
         'DuréeMax',
         'institution_id', // Ensure this column exists in your database
