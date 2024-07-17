@@ -17,9 +17,11 @@ class TypeCreditResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'TypeCredit' => $this->TypeCredit,
+            'typeCredit' => $this->typeCredit, // Ensure this matches your model's attribute
             'TauxInteret' => $this->TauxInteret,
             'DuréeMax' => $this->DuréeMax,
+            'institution_id' => $this->institution_id,
+            'institution' => new InstitutionResource($this->whenLoaded('institution')),
         ];
     }
 }

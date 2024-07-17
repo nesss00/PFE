@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTypeCreditRequest extends FormRequest
+class StoreInstitutionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +25,7 @@ class StoreTypeCreditRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'typeCredit' => 'required|string|max:255',
-            'TauxInteret' => 'required|numeric',
-            'DuréeMax' => 'required|integer',
-            'institution_id' => 'required|exists:institutions,id',
+            'type' => 'required|string|in:Banque,BMF,ONG',
         ];
     }
 }
