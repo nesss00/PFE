@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\InstitutionResource;
 use App\Models\Institution;
 use App\Http\Requests\StoreInstitutionRequest;
 use App\Http\Requests\UpdateInstitutionRequest;
@@ -15,7 +16,12 @@ class InstitutionController extends Controller
      */
     public function index()
     {
-        //
+        $vehicles = InstitutionResource::collection(Institution::latest()->paginate(10));
+        // Return a collection of $vehicles with pagination
+        // inertia response
+        return Inertia('Institution/Index', [
+            'institutions' => $vehicles,
+        ]);
     }
 
     /**
@@ -36,7 +42,15 @@ class InstitutionController extends Controller
      */
     public function store(StoreInstitutionRequest $request)
     {
-        //
+        $attr = $request->toArray();
+
+
+        Institution::create($attr);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Vehicle has been created',
+        ]);
     }
 
     /**
@@ -70,7 +84,14 @@ class InstitutionController extends Controller
      */
     public function update(UpdateInstitutionRequest $request, Institution $institution)
     {
-        //
+        $attr = $request->toArray();
+
+        $institution->update($attr);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'vehicule has been updated',
+        ]);
     }
 
     /**
@@ -81,6 +102,11 @@ class InstitutionController extends Controller
      */
     public function destroy(Institution $institution)
     {
-        //
+        $institution->delete();
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'vehicule has been deleted',
+        ]);
     }
 }

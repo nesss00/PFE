@@ -18,7 +18,8 @@ class Institution extends Model
 
     use HasFactory;
 
-    public function typeCredits() {
+    public function typeCredits(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(TypeCredit::class);
     }
 

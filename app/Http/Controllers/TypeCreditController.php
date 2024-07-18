@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\InstitutionResource;
+use App\Models\Institution;
 use App\Models\TypeCredit;
 use App\Http\Requests\StoreTypeCreditRequest;
 use App\Http\Requests\UpdateTypeCreditRequest;
@@ -17,8 +19,10 @@ class TypeCreditController extends Controller
     public function index()
     {
         $typeCredits = TypeCreditResource::collection(TypeCredit::latest()->paginate(10));
+        $institutions = Institution::all(); // Assuming you have an Institution model
         return inertia('typeCredits/Index', [
             'typeCredits' => $typeCredits,
+            'institutions' => InstitutionResource::collection($institutions),
         ]);
     }
 
@@ -36,11 +40,19 @@ class TypeCreditController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreTypeCreditRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreTypeCreditRequest $request)
     {
-        //
+        $attr = $request->toArray();
+
+
+        TypeCredit::create($attr);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Vehicle has been created',
+        ]);
     }
 
     /**
@@ -74,7 +86,14 @@ class TypeCreditController extends Controller
      */
     public function update(UpdateTypeCreditRequest $request, TypeCredit $typeCredit)
     {
-        //
+        $attr = $request->toArray();
+
+        $typeCredit->update($attr);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'vehicule has been updated',
+        ]);
     }
 
     /**
@@ -85,6 +104,11 @@ class TypeCreditController extends Controller
      */
     public function destroy(TypeCredit $typeCredit)
     {
-        //
+        $typeCredit->delete();
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'vehicule has been deleted',
+        ]);
     }
 }

@@ -3,15 +3,14 @@ import React, { useState } from 'react'
 import Dialog from '../../Components/Dashboard/Dialog';
 import Base from '../../Layouts/Base'
 import useDialog from '../../Hooks/useDialog';
-import CreateUser from '../../Components/Dashboard/TypeCredit/Create';
-import EditTypeCredit from '../../Components/Dashboard/TypeCredit/Edit';
+import CreateInstitution from '../../Components/Dashboard/Institution/Create';
+import EditInstitution from '../../Components/Dashboard/Institution/Edit';
 import { Inertia } from '@inertiajs/inertia';
 
 export default function Index(props) {
     console.log('props', props)
-    const {data: typeCredits, links, meta} = props.typeCredits;
+    const {data: institutions, links, meta} = props.institutions;
     const [edit, setEdit] = useState(false);
-    const dataInst = props.institutions.data;
     console.log('props', props)
     const [state, setState] = useState([])
     const [addDialogHandler, addCloseTrigger,addTrigger] = useDialog()
@@ -30,24 +29,22 @@ export default function Index(props) {
 
     const destroyUser = () => {
         Inertia.delete(
-            route('typecredit.destroy', state.id),
+            route('institution.destroy', state.id),
             { onSuccess: () => destroyCloseTrigger() });
     }
 
     return (
         <>
             <div className="container-fluid py-4">
-                <Dialog trigger={addTrigger} title="Create New User">
-                    <CreateUser close={addCloseTrigger} institution={dataInst}/>
+                <Dialog trigger={addTrigger} title="Create New Insitution">
+                    <CreateInstitution close={addCloseTrigger}/>
                 </Dialog>
 
-                <Dialog trigger={UpdateTrigger} title={`Update Type Credit: ${state.name}`}>
-                    {
-                        state.name && <EditTypeCredit close={UpdateCloseTrigger} institution={dataInst} model={state}/>
-                    }
+                <Dialog trigger={UpdateTrigger} title={`Update Insitution: ${state.name}`}>
+                    <EditInstitution close={UpdateCloseTrigger} model={state}/>
                 </Dialog>
 
-                <Dialog trigger={destroyTrigger} title={`Delete User: ${state.name}`}>
+                <Dialog trigger={destroyTrigger} title={`Delete Insitution: ${state.name}`}>
                     <p>Are you sure to delete this user ?</p>
                     <div className="modal-footer">
                         <button type="button" className="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
@@ -61,11 +58,11 @@ export default function Index(props) {
                             <div className="card-header pb-0">
                             <div className="row">
                                 <div className="col-md-6">
-                                    <h6>Type Credit table</h6>
+                                    <h6>Insitution table</h6>
                                 </div>
                                 <div className="col-md-6 d-flex justify-content-end">
                                     <button onClick={addDialogHandler} type="button" className="btn bg-gradient-success btn-block mb-3" data-bs-toggle="modal" data-bs-target="#exampleModalMessage">
-                                        Create New Type Credit
+                                        Create New Insitution
                                     </button>
                                 </div>
                             </div>
@@ -78,59 +75,34 @@ export default function Index(props) {
                                         <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-centter">#</th>
                                         <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-left">Name</th>
                                         <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-left">Type
-                                            Credit
-                                        </th>
-                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">Taux
-                                            Interet
-                                        </th>
-                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">Durée
-                                            Max
-                                        </th>
-                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">Banque
                                         </th>
 
                                         <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {typeCredits.map((typeCredit, index) => (
-                                        <tr key={typeCredit.id}>
+                                    {institutions.map((institution, index) => (
+                                        <tr key={institution.id}>
                                             <td className='text-center'>{meta.from + index}</td>
                                             <td className='text-left'>
                                                 <div className="d-flex px-2">
 
                                                     <div className="my-auto">
-                                                        <h6 className="mb-0 text-sm">{typeCredit.name}</h6>
+                                                        <h6 className="mb-0 text-sm">{institution.name}</h6>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className='text-left'>
-                                                <p className="text-sm font-weight-bold mb-0">{typeCredit.TypeCredit}</p>
-                                            </td>
-                                            <td className='text-left'>
-                                                <span
-                                                    className="text-xs font-weight-bold">{typeCredit.TauxInteret}</span>
-                                            </td>
-                                            <td className="align-middle text-left">
-                                                <div className="d-flex align-items-center text-left">
-                                                    <span
-                                                        className="text-xs font-weight-bold mb-0">{typeCredit.DuréeMax}</span>
-                                                </div>
-                                            </td>
-                                            <td className="align-middle text-left">
-                                                <div className="d-flex align-items-center text-left">
-                                                    <span
-                                                        className="text-xs font-weight-bold mb-0">{typeCredit.institution.name}</span>
-                                                </div>
+                                                <p className="text-sm font-weight-bold mb-0">{institution.type}</p>
                                             </td>
                                             <td className="align-middle text-center" width="10%">
                                                 <div>
-                                                    <button type="button" onClick={() => openUpdateDialog(typeCredit)}
+                                                    <button type="button" onClick={() => openUpdateDialog(institution)}
                                                             className="btn btn-vimeo btn-icon-only mx-2">
                                                         <span className="btn-inner--icon"><i
                                                             className="fas fa-pencil-alt"></i></span>
                                                     </button>
-                                                    <button type="button" onClick={() => openDestroyDialog(typeCredit)}
+                                                    <button type="button" onClick={() => openDestroyDialog(institution)}
                                                             className="btn btn-youtube btn-icon-only">
                                                         <span className="btn-inner--icon"><i
                                                             className="fas fa-trash"></i></span>

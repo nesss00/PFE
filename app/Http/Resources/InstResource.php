@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TypeCreditResource extends JsonResource
+class InstResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,11 +17,8 @@ class TypeCreditResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'TypeCredit' => $this->TypeCredit, // Ensure this matches your model's attribute
-            'TauxInteret' => $this->TauxInteret,
-            'DuréeMax' => $this->DuréeMax,
-            'institution_id' => $this->institution_id,
-            'institution' => new InstitutionResource($this->institution), // Use the relationship name here
+            'type' => $this->type,
+            'typeCredits' => TypeCreditResource::collection($this->whenLoaded('typeCredits')),
         ];
     }
 }

@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class TypeCredit extends Model
 {
+
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'TypeCredit',
@@ -15,9 +18,9 @@ class TypeCredit extends Model
         'institution_id', // Ensure this column exists in your database
     ];
 
-    use HasFactory;
 
-    public function institution() {
+    public function institution(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(Institution::class);
     }
 }
