@@ -2,10 +2,12 @@ import { useForm } from '@inertiajs/inertia-react';
 import React from 'react';
 
 export default function CreateInstitution({ close, model }) {
+    console.log('model',model);
     const { data, setData, put, reset, errors } = useForm({
         name: model.name,
-        type: model.type
+        type: model.type,
     });
+    console.log('data',data);
 
     const onChange = (e) => setData({ ...data, [e.target.id]: e.target.value });
 

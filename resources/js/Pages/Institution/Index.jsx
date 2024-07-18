@@ -6,6 +6,7 @@ import useDialog from '../../Hooks/useDialog';
 import CreateInstitution from '../../Components/Dashboard/Institution/Create';
 import EditInstitution from '../../Components/Dashboard/Institution/Edit';
 import { Inertia } from '@inertiajs/inertia';
+import EditTypeCredit from "../../Components/Dashboard/TypeCredit/Edit";
 
 export default function Index(props) {
     console.log('props', props)
@@ -41,7 +42,10 @@ export default function Index(props) {
                 </Dialog>
 
                 <Dialog trigger={UpdateTrigger} title={`Update Insitution: ${state.name}`}>
-                    <EditInstitution close={UpdateCloseTrigger} model={state}/>
+                    {
+                        state.name && <EditInstitution close={UpdateCloseTrigger} model={state}/>
+                    }
+
                 </Dialog>
 
                 <Dialog trigger={destroyTrigger} title={`Delete Insitution: ${state.name}`}>
