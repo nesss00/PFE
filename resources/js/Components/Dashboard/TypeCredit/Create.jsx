@@ -8,7 +8,8 @@ export default function CreateTypeCredit({ close, institution }) {
         TypeCredit: '',
         TauxInteret: '',
         DuréeMax: '',
-        institution_id: ''
+        institution_id: '',
+        max_money_credited: '',
     });
 
     console.log('institution32323E2', institution)
@@ -71,6 +72,11 @@ export default function CreateTypeCredit({ close, institution }) {
                             ))}
                         </select>
                         {errors.institution_id && <div className='text-danger mt-1'>{errors.institution_id}</div>}
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="max_money_credited" className="col-form-label">Max Money Credited:</label>
+                        <input type="number" className="form-control" name="max_money_credited" value={data.max_money_credited} onChange={onChange} id="max_money_credited"/>
+                        {errors.max_money_credited && <div className='text-danger mt-1'>{errors.max_money_credited}</div>}
                     </div>
                 </div>
                 <div className="modal-footer">

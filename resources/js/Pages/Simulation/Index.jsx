@@ -3,16 +3,13 @@ import React, { useState } from 'react'
 import Dialog from '../../Components/Dashboard/Dialog';
 import Base from '../../Layouts/Base'
 import useDialog from '../../Hooks/useDialog';
-import CreateUser from '../../Components/Dashboard/TypeCredit/Create';
-import EditTypeCredit from '../../Components/Dashboard/TypeCredit/Edit';
+import Create from '../../Components/Dashboard/Simulation/Create';
 import { Inertia } from '@inertiajs/inertia';
 
 export default function Index(props) {
     console.log('props', props)
-    const {data: typeCredits, links, meta} = props.typeCredits;
+    const {data: simulation, links, meta} = props.simulation;
     const [edit, setEdit] = useState(false);
-    const dataInst = props.institutions.data;
-    console.log('props', props)
     const [state, setState] = useState([])
     const [addDialogHandler, addCloseTrigger,addTrigger] = useDialog()
     const [UpdateDialogHandler, UpdateCloseTrigger,UpdateTrigger] = useDialog()
@@ -38,16 +35,14 @@ export default function Index(props) {
         <>
             <div className="container-fluid py-4">
                 <Dialog trigger={addTrigger} title="Create New User">
-                    <CreateUser close={addCloseTrigger} institution={dataInst}/>
+                    <Create></Create>
                 </Dialog>
 
-                <Dialog trigger={UpdateTrigger} title={`Update Type Credit: ${state.name}`}>
-                    {
-                        state.name && <EditTypeCredit close={UpdateCloseTrigger} institution={dataInst} model={state}/>
-                    }
+                <Dialog trigger={UpdateTrigger} title={`View Simulation: ${state.name}`}>
+
                 </Dialog>
 
-                <Dialog trigger={destroyTrigger} title={`Delete User: ${state.name}`}>
+                <Dialog trigger={destroyTrigger} title={`Delete simulation: ${state.name}`}>
                     <p>Are you sure to delete this user ?</p>
                     <div className="modal-footer">
                         <button type="button" className="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
@@ -61,11 +56,11 @@ export default function Index(props) {
                             <div className="card-header pb-0">
                             <div className="row">
                                 <div className="col-md-6">
-                                    <h6>Type Credit table</h6>
+                                    <h6>simulation table</h6>
                                 </div>
                                 <div className="col-md-6 d-flex justify-content-end">
                                     <button onClick={addDialogHandler} type="button" className="btn bg-gradient-success btn-block mb-3" data-bs-toggle="modal" data-bs-target="#exampleModalMessage">
-                                        Create New Type Credit
+                                        Create New simulation
                                     </button>
                                 </div>
                             </div>
@@ -77,60 +72,66 @@ export default function Index(props) {
                                     <tr>
                                         <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-centter">#</th>
                                         <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-left">Name</th>
-                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-left">Type
+                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-left">date
                                             Credit
                                         </th>
-                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">Taux
-                                            Interet
+                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">duree
                                         </th>
-                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">Durée
-                                            Max
+                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">taux_interet
                                         </th>
-                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">Banque
+                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">montant_emprunte
+                                        </th>
+                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">results
                                         </th>
 
                                         <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {typeCredits.map((typeCredit, index) => (
-                                        <tr key={typeCredit.id}>
+                                    {simulation.map((simulatio, index) => (
+                                        <tr key={simulatio.id}>
                                             <td className='text-center'>{meta.from + index}</td>
                                             <td className='text-left'>
                                                 <div className="d-flex px-2">
 
                                                     <div className="my-auto">
-                                                        <h6 className="mb-0 text-sm">{typeCredit.name}</h6>
+                                                        <h6 className="mb-0 text-sm">{simulatio.name}</h6>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className='text-left'>
-                                                <p className="text-sm font-weight-bold mb-0">{typeCredit.TypeCredit}</p>
+                                                <p className="text-sm font-weight-bold mb-0">{simulatio.date}</p>
                                             </td>
                                             <td className='text-left'>
                                                 <span
-                                                    className="text-xs font-weight-bold">{typeCredit.TauxInteret}</span>
+                                                    className="text-xs font-weight-bold">{simulatio.duree}</span>
                                             </td>
                                             <td className="align-middle text-left">
                                                 <div className="d-flex align-items-center text-left">
                                                     <span
-                                                        className="text-xs font-weight-bold mb-0">{typeCredit.DuréeMax}</span>
+                                                        className="text-xs font-weight-bold mb-0">{simulatio.taux_interet}</span>
                                                 </div>
                                             </td>
                                             <td className="align-middle text-left">
                                                 <div className="d-flex align-items-center text-left">
                                                     <span
-                                                        className="text-xs font-weight-bold mb-0">{typeCredit.institution.name}</span>
+                                                        className="text-xs font-weight-bold mb-0">{simulatio.montant_emprunte}</span>
+                                                </div>
+                                            </td>
+                                            <td className="align-middle text-left">
+                                                <div className="d-flex align-items-center text-left">
+                                                    <span
+                                                        className="text-xs font-weight-bold mb-0"></span>
                                                 </div>
                                             </td>
                                             <td className="align-middle text-center" width="10%">
                                                 <div>
-                                                    <button type="button" onClick={() => openUpdateDialog(typeCredit)}
+                                                    <button type="button" onClick={() => openUpdateDialog(simulatio)}
                                                             className="btn btn-vimeo btn-icon-only mx-2">
                                                         <span className="btn-inner--icon"><i
                                                             className="fas fa-pencil-alt"></i></span>
                                                     </button>
-                                                    <button type="button" onClick={() => openDestroyDialog(typeCredit)}
+                                                    <button type="button" onClick={() => openDestroyDialog(simulatio)}
                                                             className="btn btn-youtube btn-icon-only">
                                                         <span className="btn-inner--icon"><i
                                                             className="fas fa-trash"></i></span>
@@ -148,7 +149,7 @@ export default function Index(props) {
                 </div>
                 <nav aria-label="Page navigation example">
                     <ul className="pagination justify-content-center">
-                        { meta.links.map((link, k) => (
+                        {meta.links.map((link, k) => (
                             <li key={k} className="page-item">
                                 <Link disabled={link.url == null ? true : false} as="button" className={`${link.active && 'bg-info'} ${link.url == null && 'btn bg-gradient-secondary text-white'} page-link`} href={link.url || ''} dangerouslySetInnerHTML={{ __html: link.label }}/>
                             </li>

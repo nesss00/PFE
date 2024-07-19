@@ -29,6 +29,7 @@ class UpdateTypeCreditRequest extends FormRequest
             'TauxInteret' => 'required|numeric',
             'DuréeMax' => 'required|integer',
             'institution_id' => 'required|exists:institutions,id',
+            'max_money_credited' => 'required|numeric',
         ];
     }
 }

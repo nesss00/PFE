@@ -8,7 +8,8 @@ export default function EditTypeCredit({ close, institution, model }) {
         TypeCredit: model.TypeCredit,
         TauxInteret: model.TauxInteret,
         DuréeMax: model.DuréeMax,
-        institution_id: model.institution_id
+        institution_id: model.institution_id,
+        max_money_credited: model.max_money_credited,
     });
 
 
@@ -70,6 +71,11 @@ export default function EditTypeCredit({ close, institution, model }) {
                             ))}
                         </select>
                         {errors.institution_id && <div className='text-danger mt-1'>{errors.institution_id}</div>}
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="max_money_credited" className="col-form-label">Max Money Credited:</label>
+                        <input type="number" className="form-control" name="max_money_credited" value={data.max_money_credited} onChange={onChange} id="max_money_credited"/>
+                        {errors.max_money_credited && <div className='text-danger mt-1'>{errors.max_money_credited}</div>}
                     </div>
                 </div>
                 <div className="modal-footer">

@@ -88,6 +88,8 @@ export default function Index(props) {
                                         </th>
                                         <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">Banque
                                         </th>
+                                        <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-left opacity-7 ps-2">Max Money Credited
+                                        </th>
 
                                         <th className="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Actions</th>
                                     </tr>
@@ -123,6 +125,12 @@ export default function Index(props) {
                                                         className="text-xs font-weight-bold mb-0">{typeCredit.institution.name}</span>
                                                 </div>
                                             </td>
+                                            <td className="align-middle text-left">
+                                                <div className="d-flex align-items-center text-left">
+                                                    <span
+                                                        className="text-xs font-weight-bold mb-0">{typeCredit.max_money_credited}</span>
+                                                </div>
+                                            </td>
                                             <td className="align-middle text-center" width="10%">
                                                 <div>
                                                     <button type="button" onClick={() => openUpdateDialog(typeCredit)}
@@ -148,7 +156,7 @@ export default function Index(props) {
                 </div>
                 <nav aria-label="Page navigation example">
                     <ul className="pagination justify-content-center">
-                        { meta.links.map((link, k) => (
+                        {meta.links.map((link, k) => (
                             <li key={k} className="page-item">
                                 <Link disabled={link.url == null ? true : false} as="button" className={`${link.active && 'bg-info'} ${link.url == null && 'btn bg-gradient-secondary text-white'} page-link`} href={link.url || ''} dangerouslySetInnerHTML={{ __html: link.label }}/>
                             </li>

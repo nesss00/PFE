@@ -16,6 +16,7 @@ class TypeCredit extends Model
         'TauxInteret',
         'DuréeMax',
         'institution_id', // Ensure this column exists in your database
+        'max_money_credited', // Add this line
     ];
 
 

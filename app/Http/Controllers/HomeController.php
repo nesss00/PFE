@@ -48,4 +48,5 @@ class HomeController extends Controller
             'email' => 'The provide credentials does not match our record.',
         ]);
     }
+
 }

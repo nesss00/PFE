@@ -2,38 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\SimulationResource;
-use App\Models\Result;
+use App\Models\TypeCredit;
+use Illuminate\Http\Request;
+use App\Http\Resources\TypeCreditResource;
 use App\Models\Simulation;
 use App\Http\Requests\StoreSimulationRequest;
 use App\Http\Requests\UpdateSimulationRequest;
-use App\Models\TypeCredit;
-use Illuminate\Http\Request;
+use App\Models\Result;
 
-class SimulationController extends Controller
+class CreditSimulationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function simulate(Request $request): \Illuminate\Http\JsonResponse
     {
-        $simulation = SimulationResource::collection(Simulation::latest()->paginate(10));
-        return inertia('Simulation/Index', [
-            'simulation' => $simulation,
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-    public function store(Request $request): \Illuminate\Http\JsonResponse
-    {
-        dd($request->all());
         // Validate request data
         $request->validate([
             'type' => 'required|string',
@@ -114,50 +94,5 @@ class SimulationController extends Controller
 
 
         return response()->json($simulations);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Simulation  $simulation
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Simulation $simulation)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Simulation  $simulation
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Simulation $simulation)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateSimulationRequest  $request
-     * @param  \App\Models\Simulation  $simulation
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateSimulationRequest $request, Simulation $simulation)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Simulation  $simulation
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Simulation $simulation)
-    {
-        //
     }
 }

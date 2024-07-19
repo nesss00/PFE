@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Guest from '../Layouts/Guest';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
@@ -8,14 +8,18 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import {Slider} from "@mui/material";
+import {Card, CardContent, Divider, Slider} from "@mui/material";
+import { Inertia } from '@inertiajs/inertia';
+import axios from 'axios';
+import {Link} from "@inertiajs/inertia-react";
 
-const steps = ['Select campaign settings', 'Create an ad group', 'Create an ad'];
+const steps = ['Select Type de credit', 'Add more details', 'Results'];
 
 export default function Home() {
-    const [activeStep, setActiveStep] = React.useState(0);
-    const [completed, setCompleted] = React.useState({});
-    const [formData, setFormData] = React.useState({
+    const [activeStep, setActiveStep] = useState(0);
+    const [completed, setCompleted] = useState({});
+    const [results, setResults] = useState(null);
+    const [formData, setFormData] = useState({
         type: '',
         adGroupName: '',
         adGroupDescription: '',
@@ -29,30 +33,34 @@ export default function Home() {
     });
 
     const totalSteps = () => steps.length;
-
     const completedSteps = () => Object.keys(completed).length;
-
     const isLastStep = () => activeStep === totalSteps() - 1;
-
     const allStepsCompleted = () => completedSteps() === totalSteps();
+    const simulated = () => results !== null;
 
     const handleNext = () => {
-        const newActiveStep =
-            isLastStep() && !allStepsCompleted()
+        if (activeStep === steps.length - 1) {
+                if (results == null) {
+                    console.log("you don't have results ")
+                    simulate()
+                } else {
+                    console.log("you have results ")
+                }
+        } else {
+            const newActiveStep = isLastStep() && !allStepsCompleted()
                 ? steps.findIndex((step, i) => !(i in completed))
                 : activeStep + 1;
-        setActiveStep(newActiveStep);
+            setActiveStep(newActiveStep);
+        }
     };
 
     const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
-
     const handleStep = (step) => () => setActiveStep(step);
 
     const handleComplete = () => {
         const newCompleted = completed;
         newCompleted[activeStep] = true;
         setCompleted(newCompleted);
-        handleNext();
     };
 
     const handleReset = () => {
@@ -70,6 +78,7 @@ export default function Home() {
             adTitle: '',
             adContent: ''
         });
+        setResults(null);
     };
 
     const handleChange = (e) => {
@@ -84,6 +93,19 @@ export default function Home() {
             ...formData,
             [name]: newValue
         });
+    };
+
+    const simulate = () => {
+
+        axios.post(route('simulate'), formData)
+            .then(response => {
+                console.log('simulate', response.data)
+                setResults(response.data);
+                handleComplete();
+            })
+            .catch(error => {
+                console.error(error.response.data.errors);
+            });
     };
 
     const StepContent = ({ step }) => {
@@ -107,27 +129,30 @@ export default function Home() {
                             <TextField
                                 select
                                 label="Select type Credit Pour vous"
-                                name="type"
+                                name="typeCredit"
                                 value={formData.typeCredit}
                                 onChange={handleChange}
                                 variant="outlined"
                                 fullWidth
                             >
-                                <MenuItem value="particulier">Credit 1</MenuItem>
-                                <MenuItem value="entreprise">Credit 2</MenuItem>
-                            </TextField>) }
+                                <MenuItem value="credit1">credit de voiture</MenuItem>
+                                <MenuItem value="credit2">credit de immobilier</MenuItem>
+                                <MenuItem value="credit2">credit de logement</MenuItem>
+                            </TextField>
+                        )}
                         {formData.type === 'entreprise' && (
                             <TextField
                                 select
                                 label="Select type Credit Pour votre entreprise"
-                                name="type"
+                                name="typeCredit"
                                 value={formData.typeCredit}
                                 onChange={handleChange}
                                 variant="outlined"
                                 fullWidth
                             >
-                                <MenuItem value="particulier">Credit 4</MenuItem>
-                                <MenuItem value="entreprise">Credit 5</MenuItem>
+                                <MenuItem value="credit4">credit court terme</MenuItem>
+                                <MenuItem value="credit5">credit long terme</MenuItem>
+                                <MenuItem value="credit5">credit de consommation</MenuItem>
                             </TextField>
                         )}
                     </Box>
@@ -198,25 +223,41 @@ export default function Home() {
                     </Box>
                 );
             case 2:
-                return (
+                return results ? (
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <TextField
-                            label="Ad Title"
-                            name="adTitle"
-                            value={formData.adTitle}
-                            onChange={handleChange}
-                            variant="outlined"
-                            fullWidth
-                        />
-                        <TextField
-                            label="Ad Content"
-                            name="adContent"
-                            value={formData.adContent}
-                            onChange={handleChange}
-                            variant="outlined"
-                            fullWidth
-                        />
+                        <Typography variant="h6">Simulation Results</Typography>
+                        {results.map((result, index) => (
+                            <Card key={index} sx={{ marginBottom: 2, boxShadow: 3 }}>
+                                <CardContent>
+                                    <Typography variant="h6" sx={{ marginBottom: 1 }}>
+                                        Type de credit: {result.type}
+                                    </Typography>
+                                    <Divider sx={{ marginBottom: 1 }} />
+                                    <Typography variant="body1" sx={{ marginBottom: 0.5 }}>
+                                        Nom de credit: {result.typeCredit}
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ marginBottom: 0.5 }}>
+                                        monthlyInstallment: {result.monthlyInstallment}
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        totalCost: {result.totalCost}
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        TauxInteret: {result.TauxInteret}
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        Institution: {result.Institution}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        ))}
+                        <Link href={route('register')} className="nav-link font-weight-bold px-0">
+                            <i className="fa fa-user me-sm-1" />
+                            <span className="d-sm-inline">You have to register in order to list all of your simulations! register here</span>
+                        </Link>
                     </Box>
+                ) : (
+                    <Typography>No results to display</Typography>
                 );
             default:
                 return 'Unknown step';
@@ -264,7 +305,7 @@ export default function Home() {
                                     </Button>
                                     <Box sx={{ flex: '1 1 auto' }} />
                                     <Button onClick={handleNext} sx={{ mr: 1 }}>
-                                        Next
+                                        {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
                                     </Button>
                                     {activeStep !== steps.length &&
                                         (completed[activeStep] ? (
@@ -289,3 +330,5 @@ export default function Home() {
 }
 
 Home.layout = (page) => <Guest children={page} title={"Home"} />;
+
+

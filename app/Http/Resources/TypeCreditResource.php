@@ -21,6 +21,7 @@ class TypeCreditResource extends JsonResource
             'TauxInteret' => $this->TauxInteret,
             'DuréeMax' => $this->DuréeMax,
             'institution_id' => $this->institution_id,
+            'max_money_credited' => $this->max_money_credited,
             'institution' => new InstitutionResource($this->institution), // Use the relationship name here
         ];
     }

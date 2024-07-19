@@ -3,6 +3,8 @@
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CreditSimulationController;
+use App\Http\Controllers\CreditSimulationUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -21,6 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::apiResource('typecredit', TypeCreditController::class);
     Route::apiResource('simulation', SimulationController::class);
     Route::apiResource('institution', InstitutionController::class);
+    Route::post('simulateuser', [CreditSimulationUserController::class, 'simulateuser'])->name('simulateuser');
+
     Route::get('profile', ProfileController::class)->name('profile');
 });
 
@@ -30,6 +34,8 @@ Route::middleware('guest')->group(function () {
 
     Route::get('register', [RegisterController::class, 'create'])->name('register');
     Route::post('register', [RegisterController::class, 'store']);
+
+    Route::post('simulate', [CreditSimulationController::class, 'simulate'])->name('simulate');
 
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);

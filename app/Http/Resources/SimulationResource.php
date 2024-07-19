@@ -14,6 +14,16 @@ class SimulationResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'date' => $this->date,
+            'montant_emprunte' => $this->montant_emprunte,
+            'duree' => $this->duree,
+            'taux_interet' => $this->taux_interet,
+            'user_id' => $this->user_id,
+            'user' => new UserResource($this->user),
+            'results' => ResultResource::collection($this->results),
+        ];
     }
 }
