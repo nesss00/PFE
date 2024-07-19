@@ -5,6 +5,8 @@ import Base from '../../Layouts/Base'
 import useDialog from '../../Hooks/useDialog';
 import Create from '../../Components/Dashboard/Simulation/Create';
 import { Inertia } from '@inertiajs/inertia';
+import {Card, CardContent} from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 export default function Index(props) {
     console.log('props', props)
@@ -12,12 +14,56 @@ export default function Index(props) {
     const [edit, setEdit] = useState(false);
     const [state, setState] = useState([])
     const [addDialogHandler, addCloseTrigger,addTrigger] = useDialog()
-    const [UpdateDialogHandler, UpdateCloseTrigger,UpdateTrigger] = useDialog()
+    const [ViewDialogHandler, ViewCloseTrigger,ViewTrigger] = useDialog()
     const [destroyDialogHandler, destroyCloseTrigger,destroyTrigger] = useDialog()
-    const openUpdateDialog = (typeCredit) => {
-        console.log('typeCredit', typeCredit)
-        setState(typeCredit);
-        UpdateDialogHandler()
+    const [simulationResults, setSimulationResults] = useState([]);
+    const [bestResult, setBestResult] = useState({
+        monthlyFee: 0,
+        totalCost: 0,
+        typeCredit: {
+            TypeCredit: '',
+            TauxInteret: 0,
+            institution: {
+                name: ''
+            }
+        }
+    });
+
+
+    const calculateMonthlyFee = (principal, annualRate, durationMonths) => {
+        const monthlyRate = annualRate / 100 / 12;
+        return (principal * monthlyRate * Math.pow(1 + monthlyRate, durationMonths)) / (Math.pow(1 + monthlyRate, durationMonths) - 1);
+    };
+
+    const calculateTotalCost = (monthlyFee, durationMonths) => {
+        return monthlyFee * durationMonths;
+    };
+    const ViewUpdateDialog = (sim) => {
+        setState(sim);
+        console.log('sim', sim)
+
+        const { montant_emprunte, duree, taux_interet, results } = state;
+        const loanAmount = parseFloat(montant_emprunte);
+        const loanDuration = duree;
+
+        const simulationResults = results.map(result => {
+            console.log('result', result)
+            const annualRate = parseFloat(result.typeCredit.TauxInteret);
+            const monthlyFee = calculateMonthlyFee(loanAmount, annualRate, loanDuration);
+            const totalCost = calculateTotalCost(monthlyFee, loanDuration);
+            return {
+                ...result,
+                monthlyFee,
+                totalCost
+            };
+        });
+
+        console.log('simulationResults', simulationResults)
+        setSimulationResults(simulationResults);
+        const bestResults = simulationResults.reduce((prev, current) => (prev.totalCost < current.totalCost ? prev : current));
+        setBestResult(bestResults);
+        console.log('bestResults', bestResults)
+        ViewDialogHandler()
     }
 
     const openDestroyDialog = (typeCredit) => {
@@ -35,17 +81,40 @@ export default function Index(props) {
         <>
             <div className="container-fluid py-4">
                 <Dialog trigger={addTrigger} title="Create New User">
-                    <Create></Create>
+                    <Create close={addCloseTrigger}></Create>
                 </Dialog>
 
-                <Dialog trigger={UpdateTrigger} title={`View Simulation: ${state.name}`}>
-
+                <Dialog trigger={ViewTrigger} title={`View Simulation: ${state.name}`}>
+                    {simulationResults && state ? <div>
+                        {simulationResults.map((result, index) => (
+                            <Card key={index} style={{marginBottom: '20px'}}>
+                                <CardContent>
+                                    <Typography variant="h6">{result.typeCredit.TypeCredit}</Typography>
+                                    <Typography>Institution: {result.typeCredit.institution.name}</Typography>
+                                    <Typography>Annual Interest Rate: {result.typeCredit.TauxInteret}%</Typography>
+                                    <Typography>Monthly Fee: {result.monthlyFee.toFixed(2)}</Typography>
+                                    <Typography>Total Cost: {result.totalCost.toFixed(2)}</Typography>
+                                </CardContent>
+                            </Card>
+                        ))}
+                        <Typography variant="h5" style={{marginTop: '20px'}}>Best Option</Typography>
+                        {bestResult && state ? <Card>
+                            <CardContent>
+                                <Typography variant="h6">{bestResult.typeCredit.TypeCredit}</Typography>
+                                <Typography>Institution: {bestResult.typeCredit.institution.name}</Typography>
+                                <Typography>Annual Interest Rate: {bestResult.typeCredit.TauxInteret}%</Typography>
+                                <Typography>Monthly Fee: {bestResult.monthlyFee.toFixed(2)}</Typography>
+                                <Typography>Total Cost: {bestResult.totalCost.toFixed(2)}</Typography>
+                            </CardContent>
+                        </Card> : ''}
+                    </div> : ''}
                 </Dialog>
 
                 <Dialog trigger={destroyTrigger} title={`Delete simulation: ${state.name}`}>
                     <p>Are you sure to delete this user ?</p>
                     <div className="modal-footer">
-                        <button type="button" className="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn bg-gradient-secondary" data-bs-dismiss="modal">Close
+                        </button>
                         <button type="submit" onClick={destroyUser} className="btn bg-gradient-danger">Delete</button>
                     </div>
                 </Dialog>
@@ -54,16 +123,18 @@ export default function Index(props) {
                     <div className="col-12 w-100">
                         <div className="card h-100 w-100">
                             <div className="card-header pb-0">
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <h6>simulation table</h6>
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <h6>simulation table</h6>
+                                    </div>
+                                    <div className="col-md-6 d-flex justify-content-end">
+                                        <button onClick={addDialogHandler} type="button"
+                                                className="btn bg-gradient-success btn-block mb-3"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModalMessage">
+                                            Create New simulation
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="col-md-6 d-flex justify-content-end">
-                                    <button onClick={addDialogHandler} type="button" className="btn bg-gradient-success btn-block mb-3" data-bs-toggle="modal" data-bs-target="#exampleModalMessage">
-                                        Create New simulation
-                                    </button>
-                                </div>
-                            </div>
                             </div>
                             <div className="card-body px-0 pt-0 pb-2">
                             <div className="table-responsive-xxl p-0" width="100%">
@@ -121,15 +192,15 @@ export default function Index(props) {
                                             <td className="align-middle text-left">
                                                 <div className="d-flex align-items-center text-left">
                                                     <span
-                                                        className="text-xs font-weight-bold mb-0"></span>
+                                                        className="text-xs font-weight-bold mb-0">{simulatio.results.length}</span>
                                                 </div>
                                             </td>
                                             <td className="align-middle text-center" width="10%">
                                                 <div>
-                                                    <button type="button" onClick={() => openUpdateDialog(simulatio)}
+                                                    <button type="button" onClick={() => ViewUpdateDialog(simulatio)}
                                                             className="btn btn-vimeo btn-icon-only mx-2">
                                                         <span className="btn-inner--icon"><i
-                                                            className="fas fa-pencil-alt"></i></span>
+                                                            className="fas fa-eye"></i></span>
                                                     </button>
                                                     <button type="button" onClick={() => openDestroyDialog(simulatio)}
                                                             className="btn btn-youtube btn-icon-only">

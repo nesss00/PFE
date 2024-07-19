@@ -14,7 +14,7 @@ import {Link} from "@inertiajs/inertia-react";
 
 const steps = ['Select Type de credit', 'Add more details', 'Results'];
 
-export default function Home() {
+export default function Home(close) {
     const [activeStep, setActiveStep] = useState(0);
     const [completed, setCompleted] = useState({});
     const [results, setResults] = useState(null);
@@ -42,6 +42,10 @@ export default function Home() {
             if (results == null) {
                 console.log("you don't have results ")
                 simulate()
+                // wait 5 seconds and close the modal
+                setTimeout(() => {
+                    close()
+                }, 5000);
             } else {
                 console.log("you have results ")
             }
