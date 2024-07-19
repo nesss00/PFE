@@ -1,7 +1,8 @@
 import { Link } from '@inertiajs/inertia-react'
 import React from 'react'
 
-export default function Sidebar() {
+export default function Sidebar(user) {
+    console.log(user)
     return (
         <aside className="sidenav bg-default navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
             <div className="sidenav-header">
@@ -15,9 +16,11 @@ export default function Sidebar() {
             <div className="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
                 <ul className="navbar-nav">
                     <li className="nav-item">
-                        <Link className={`${route().current('dashboard') && 'active'} nav-link`} href={route('dashboard')}>
-                            <div className="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i className="ni ni-tv-2 text-primary text-sm opacity-10" />
+                        <Link className={`${route().current('dashboard') && 'active'} nav-link`}
+                              href={route('dashboard')}>
+                            <div
+                                className="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i className="ni ni-tv-2 text-primary text-sm opacity-10"/>
                             </div>
                             <span className="nav-link-text ms-1">Dashboard</span>
                         </Link>
@@ -37,24 +40,30 @@ export default function Sidebar() {
                         <h6 className="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Manage</h6>
                     </li>
                     <li className="nav-item">
-                        <Link className={`${route().current('users.*') && 'active'} nav-link`} href={route('users.index')}>
-                            <div className="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i className="fas fa-user-lock text-warning text-sm opacity-10" />
+                        {user.user === 'admin' ? <div><Link className={`${route().current('users.*') && 'active'} nav-link`}
+                                                     href={route('users.index')}>
+                            <div
+                                className="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i className="fas fa-user-lock text-warning text-sm opacity-10"/>
                             </div>
                             <span className="nav-link-text ms-1">Users</span>
                         </Link>
-                        <Link className={`${route().current('typecredit.*') && 'active'} nav-link`} href={route('typecredit.index')}>
-                            <div className="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i className="fas fa-user-lock text-warning text-sm opacity-10" />
-                            </div>
-                            <span className="nav-link-text ms-1">Type Credit</span>
-                        </Link>
-                        <Link className={`${route().current('institution.*') && 'active'} nav-link`} href={route('institution.index')}>
-                            <div className="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i className="fas fa-user-lock text-warning text-sm opacity-10" />
-                            </div>
-                            <span className="nav-link-text ms-1">institution</span>
-                        </Link>
+                            <Link className={`${route().current('typecredit.*') && 'active'} nav-link`}
+                        href={route('typecredit.index')}>
+                        <div
+                            className="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i className="fas fa-user-lock text-warning text-sm opacity-10"/>
+                        </div>
+                        <span className="nav-link-text ms-1">Type Credit</span>
+                    </Link>
+                    <Link className={`${route().current('institution.*') && 'active'} nav-link`}
+                          href={route('institution.index')}>
+                        <div
+                            className="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i className="fas fa-user-lock text-warning text-sm opacity-10"/>
+                        </div>
+                        <span className="nav-link-text ms-1">institution</span>
+                    </Link></div> : ''}
                         <Link className={`${route().current('simulation.*') && 'active'} nav-link`} href={route('simulation.index')}>
                             <div className="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <i className="fas fa-user-lock text-warning text-sm opacity-10" />
