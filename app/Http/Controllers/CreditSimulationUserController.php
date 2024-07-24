@@ -77,7 +77,8 @@ class CreditSimulationUserController extends Controller
         $simulation->montant_emprunte = $money;
         $simulation->duree = $duration;
         $simulation->taux_interet = $simulations[0]['TauxInteret'];
-
+        $userId = auth()->id();
+        $simulation->user_id = $userId;
         # save the simulation
         $simulation->save();
 

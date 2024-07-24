@@ -81,6 +81,7 @@ class CreditSimulationController extends Controller
         $simulation->duree = $duration;
         $simulation->taux_interet = $simulations[0]['TauxInteret'];
 
+        // Get the authenticated user's ID
         # save the simulation
         $simulation->save();
 

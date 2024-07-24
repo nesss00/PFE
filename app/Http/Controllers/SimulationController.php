@@ -94,9 +94,14 @@ class SimulationController extends Controller
 
         // return the best two credit options
         $simulations = array_slice($simulations, 0, 2);
-
+        $userId = auth()->id();
+        dd($userId);
+        // Get the authenticated user's ID
         # Save the simulation
         $simulation = new Simulation();
+
+        $simulation->user_id = $userId;
+
         # give it a generated name like simulation 1 etc
         $simulation->name = 'Simulation ' . rand(1, 1000);
         $simulation->date = now();
