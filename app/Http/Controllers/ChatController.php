@@ -9,6 +9,7 @@ use App\Models\ChatGroup;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class ChatController extends Controller
 {
@@ -81,15 +82,28 @@ class ChatController extends Controller
         return redirect()->route('chat.index')->with('success', 'Chat added and processed successfully');
     }
 
+
     public function processChat($chatPrompt)
     {
-        // Placeholder logic for processing a chat
-        // Replace this with actual model invocation logic
-        $result = "Processed response for: " . $chatPrompt;
+        // Define the URI and data to be sent
+        $uri = 'http://localhost:8082/apiv1/regulation/get-regulation';
+        $data = [
+            'text' => $chatPrompt,
+        ];
 
-        // Return a simulated response
-        return ['result' => $result];
+        // Make a POST request to the URI with the data
+        $response = Http::post($uri, $data);
+
+        // Get the response body
+        $responseBody = $response->json();
+
+        // Extract the regulation from the response
+        $regulation = $responseBody['regulation'] ?? 'No regulation found';
+
+        // Return the result
+        return ['result' => $regulation];
     }
+
 
     public function destroy($id)
     {
