@@ -17,9 +17,13 @@ class SimulationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $simulation = SimulationResource::collection(Simulation::latest()->paginate(10));
+        $userId = auth()->id(); // Get the authenticated user's ID
+
+        // Retrieve simulations associated with the authenticated user
+        $simulation = SimulationResource::collection(Simulation::where('user_id', $userId)->latest()->paginate(10));
+
         return inertia('Simulation/Index', [
             'simulation' => $simulation,
         ]);
@@ -33,7 +37,6 @@ class SimulationController extends Controller
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        dd($request->all());
         // Validate request data
         $request->validate([
             'type' => 'required|string',
