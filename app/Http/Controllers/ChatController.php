@@ -15,8 +15,10 @@ class ChatController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        $user_id = $user->id;
         // Fetch chat groups and chats
-        $chatGroups = ChatGroup::with('chats')->get();
+        $chatGroups = ChatGroup::where('user_id', $user_id)->with('chats')->get();
 
         // Return the view using Inertia
         return Inertia::render('Chat/Index', [

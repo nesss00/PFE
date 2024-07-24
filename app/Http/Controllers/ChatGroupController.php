@@ -12,7 +12,13 @@ class ChatGroupController extends Controller
 {
     public function create(ChatGroupRequest $request)
     {
-        $chatGroup = ChatGroup::create($request->validated());
+        $user = auth()->user();
+        $user_id = $user->id;
+        // Create a new chat group
+        $chatGroup = ChatGroup::create([
+            'name' => $request->input('name'),
+            'user_id' => $user_id,
+        ]);
 
         return redirect()->back()->with('success', 'Chat Group has been created');
     }
