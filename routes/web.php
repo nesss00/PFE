@@ -3,6 +3,8 @@
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ChatGroupController;
 use App\Http\Controllers\CreditSimulationController;
 use App\Http\Controllers\CreditSimulationUserController;
 use App\Http\Controllers\DashboardController;
@@ -26,6 +28,14 @@ Route::middleware('auth')->group(function () {
     Route::post('simulateuser', [CreditSimulationUserController::class, 'simulateuser'])->name('simulateuser');
 
     Route::get('profile', ProfileController::class)->name('profile');
+
+    // Chat and ChatGroup routes
+    Route::get('chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::post('chat/store', [ChatController::class, 'store'])->name('chat.store');
+    Route::post('chat/add-chat', [ChatController::class, 'addChat'])->name('chat.add');
+    Route::delete('chat/{id}', [ChatController::class, 'destroy'])->name('chat.destroy');
+    Route::post('chat/create', [ChatGroupController::class, 'create'])->name('chat.create');
+    Route::post('chat/add-chat-to-group', [ChatGroupController::class, 'addChat'])->name('chat.addChatToGroup');
 });
 
 Route::middleware('guest')->group(function () {
@@ -40,4 +50,3 @@ Route::middleware('guest')->group(function () {
     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 });
-
