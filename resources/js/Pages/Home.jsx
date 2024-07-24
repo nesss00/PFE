@@ -8,12 +8,12 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import {Card, CardContent, Divider, Slider} from "@mui/material";
+import { Card, CardContent, Divider, Slider } from "@mui/material";
 import { Inertia } from '@inertiajs/inertia';
 import axios from 'axios';
-import {Link} from "@inertiajs/inertia-react";
+import {Link, useForm} from "@inertiajs/inertia-react";
 
-const steps = ['Select Type de credit', 'Add more details', 'Results'];
+const steps = ['Select Type de credit', 'Add more details', 'Results', 'Register'];
 
 export default function Home() {
     const [activeStep, setActiveStep] = useState(0);
@@ -31,6 +31,9 @@ export default function Home() {
         adTitle: '',
         adContent: ''
     });
+    const {data, setData, post} = useForm({
+        name: '', username: '', email: '', password:'',
+    })
 
     const totalSteps = () => steps.length;
     const completedSteps = () => Object.keys(completed).length;
@@ -40,12 +43,15 @@ export default function Home() {
 
     const handleNext = () => {
         if (activeStep === steps.length - 1) {
-                if (results == null) {
-                    console.log("you don't have results ")
-                    simulate()
-                } else {
-                    console.log("you have results ")
-                }
+            // If last step is the Register step
+            console.log("Ready for registration");
+        } else if (activeStep === steps.length - 2) {
+            // If penultimate step is Results
+            if (!results) {
+                simulate();
+            } else {
+                setActiveStep((prevActiveStep) => prevActiveStep + 1);
+            }
         } else {
             const newActiveStep = isLastStep() && !allStepsCompleted()
                 ? steps.findIndex((step, i) => !(i in completed))
@@ -88,6 +94,9 @@ export default function Home() {
         });
     };
 
+    const handleRegisterChange = (e) => setData({...data, [e.target.id]: e.target.value})
+
+
     const handleSliderChange = (name) => (event, newValue) => {
         setFormData({
             ...formData,
@@ -95,8 +104,13 @@ export default function Home() {
         });
     };
 
-    const simulate = () => {
+    const submitHandler = (e) => {
+        // console.log(data);
+        e.preventDefault()
+        post(route('register'), data);
+    }
 
+    const simulate = () => {
         axios.post(route('simulate'), formData)
             .then(response => {
                 console.log('simulate', response.data)
@@ -137,7 +151,7 @@ export default function Home() {
                             >
                                 <MenuItem value="credit1">credit de voiture</MenuItem>
                                 <MenuItem value="credit2">credit de immobilier</MenuItem>
-                                <MenuItem value="credit2">credit de logement</MenuItem>
+                                <MenuItem value="credit3">credit de logement</MenuItem>
                             </TextField>
                         )}
                         {formData.type === 'entreprise' && (
@@ -152,7 +166,7 @@ export default function Home() {
                             >
                                 <MenuItem value="credit4">credit court terme</MenuItem>
                                 <MenuItem value="credit5">credit long terme</MenuItem>
-                                <MenuItem value="credit5">credit de consommation</MenuItem>
+                                <MenuItem value="credit6">credit de consommation</MenuItem>
                             </TextField>
                         )}
                     </Box>
@@ -237,98 +251,121 @@ export default function Home() {
                                         Nom de credit: {result.typeCredit}
                                     </Typography>
                                     <Typography variant="body1" sx={{ marginBottom: 0.5 }}>
-                                        monthlyInstallment: {result.monthlyInstallment}
+                                        Monthly Installment: {result.monthlyInstallment}
                                     </Typography>
-                                    <Typography variant="body1">
-                                        totalCost: {result.totalCost}
-                                    </Typography>
-                                    <Typography variant="body1">
-                                        TauxInteret: {result.TauxInteret}
-                                    </Typography>
-                                    <Typography variant="body1">
-                                        Institution: {result.Institution}
+                                    <Typography variant="body1" sx={{ marginBottom: 0.5 }}>
+                                        Total Cost: {result.totalCost}
                                     </Typography>
                                 </CardContent>
                             </Card>
                         ))}
-                        <Link href={route('register')} className="nav-link font-weight-bold px-0">
-                            <i className="fa fa-user me-sm-1" />
-                            <span className="d-sm-inline">You have to register in order to list all of your simulations! register here</span>
-                        </Link>
                     </Box>
                 ) : (
-                    <Typography>No results to display</Typography>
+                    <Typography variant="h6">No results to display</Typography>
+                );
+            case 3:
+                return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 3 }}>
+                        <Typography variant="h6" sx={{ marginBottom: 2 }}>Register</Typography>
+                        <TextField
+                            id="name"
+                            label="Name"
+                            variant="outlined"
+                            fullWidth
+                            value={data.name}
+                            onChange={handleRegisterChange}
+                        />
+                        <TextField
+                            id="username"
+                            label="Username"
+                            variant="outlined"
+                            fullWidth
+                            value={data.username}
+                            onChange={handleRegisterChange}
+                        />
+                        <TextField
+                            id="email"
+                            label="Email"
+                            variant="outlined"
+                            fullWidth
+                            value={data.email}
+                            onChange={handleRegisterChange}
+                        />
+                        <TextField
+                            id="password"
+                            label="Password"
+                            type="password"
+                            variant="outlined"
+                            fullWidth
+                            value={data.password}
+                            onChange={handleRegisterChange}
+                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={submitHandler}
+                            sx={{ marginTop: 2 }}
+                        >
+                            Register
+                        </Button>
+                    </Box>
                 );
             default:
-                return 'Unknown step';
+                return null;
         }
     };
 
     return (
-        <div className='container'>
-            <div className="card">
-                <div className="card-body">
-                    <Stepper nonLinear activeStep={activeStep}>
-                        {steps.map((label, index) => (
-                            <Step key={label} completed={completed[index]}>
-                                <StepButton color="inherit" onClick={handleStep(index)}>
-                                    {label}
-                                </StepButton>
-                            </Step>
-                        ))}
-                    </Stepper>
-                    <div>
-                        {allStepsCompleted() ? (
-                            <React.Fragment>
-                                <Typography sx={{ mt: 2, mb: 1 }}>
-                                    All steps completed - you&apos;re finished
-                                </Typography>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                    <Box sx={{ flex: '1 1 auto' }} />
-                                    <Button onClick={handleReset}>Reset</Button>
-                                </Box>
-                            </React.Fragment>
-                        ) : (
-                            <React.Fragment>
-                                <Typography sx={{ mt: 2, mb: 1, py: 1 }}>
-                                    Step {activeStep + 1}
-                                </Typography>
-                                <StepContent step={activeStep} />
-                                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                    <Button
-                                        color="inherit"
-                                        disabled={activeStep === 0}
-                                        onClick={handleBack}
-                                        sx={{ mr: 1 }}
-                                    >
-                                        Back
-                                    </Button>
-                                    <Box sx={{ flex: '1 1 auto' }} />
-                                    <Button onClick={handleNext} sx={{ mr: 1 }}>
-                                        {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
-                                    </Button>
-                                    {activeStep !== steps.length &&
-                                        (completed[activeStep] ? (
-                                            <Typography variant="caption" sx={{ display: 'inline-block' }}>
-                                                Step {activeStep + 1} already completed
-                                            </Typography>
-                                        ) : (
-                                            <Button onClick={handleComplete}>
-                                                {completedSteps() === totalSteps() - 1
-                                                    ? 'Finish'
-                                                    : 'Complete Step'}
-                                            </Button>
-                                        ))}
-                                </Box>
-                            </React.Fragment>
+        <Guest>
+            <Box sx={{ width: '100%', padding: 3 }}>
+                <Stepper nonLinear activeStep={activeStep}>
+                    {steps.map((step, index) => (
+                        <Step key={step} completed={completed[index]}>
+                            <StepButton onClick={handleStep(index)}>{step}</StepButton>
+                        </Step>
+                    ))}
+                </Stepper>
+                <Box sx={{ marginTop: 3 }}>
+                    <StepContent step={activeStep} />
+                    <Box sx={{ marginTop: 2 }}>
+                        <Button
+                            disabled={activeStep === 0}
+                            onClick={handleBack}
+                            sx={{ marginRight: 1 }}
+                        >
+                            Back
+                        </Button>
+                        <Button
+                            onClick={activeStep === steps.length - 1 ? handleRegisterChange : handleNext}
+                            variant="contained"
+                            color="primary"
+                        >
+                            {isLastStep() ? 'Finish' : 'Next'}
+                        </Button>
+                        {activeStep === steps.length - 2 && !simulated() && (
+                            <Button
+                                onClick={simulate}
+                                variant="contained"
+                                color="secondary"
+                                sx={{ marginLeft: 2 }}
+                            >
+                                Stimulate
+                            </Button>
                         )}
-                    </div>
-                </div>
-            </div>
-        </div>
+                        {activeStep === steps.length - 1 && (
+                            <Button
+                                onClick={() => Inertia.post(route('register'), registerData)}
+                                variant="contained"
+                                color="primary"
+                                sx={{ marginLeft: 2 }}
+                            >
+                                Register
+                            </Button>
+                        )}
+                    </Box>
+                </Box>
+            </Box>
+        </Guest>
     );
 }
-
-Home.layout = (page) => <Guest children={page} title={"Home"} />;
-
 
