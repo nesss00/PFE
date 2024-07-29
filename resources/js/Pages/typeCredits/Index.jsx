@@ -37,7 +37,7 @@ export default function Index(props) {
     return (
         <>
             <div className="container-fluid py-4">
-                <Dialog trigger={addTrigger} title="Create New User">
+                <Dialog trigger={addTrigger} title="Create New Type Credit">
                     <CreateUser close={addCloseTrigger} institution={dataInst}/>
                 </Dialog>
 
@@ -47,8 +47,8 @@ export default function Index(props) {
                     }
                 </Dialog>
 
-                <Dialog trigger={destroyTrigger} title={`Delete User: ${state.name}`}>
-                    <p>Are you sure to delete this user ?</p>
+                <Dialog trigger={destroyTrigger} title={`Delete Type Credit: ${state.name}`}>
+                    <p>Are you sure to delete this Type de credit ?</p>
                     <div className="modal-footer">
                         <button type="button" className="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" onClick={destroyUser} className="btn bg-gradient-danger">Delete</button>
@@ -168,4 +168,4 @@ export default function Index(props) {
     )
 }
 
-Index.layout = (page) => <Base key={page} children={page} title={"Manage Users"}/>
+Index.layout = (page) => <Base key={page} children={page} title={"Manage Type de credit"}/>
