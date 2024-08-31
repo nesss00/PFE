@@ -49,7 +49,7 @@ export default function Index(props) {
                 </Dialog>
 
                 <Dialog trigger={destroyTrigger} title={`Delete Insitution: ${state.name}`}>
-                    <p>Are you sure to delete this user ?</p>
+                    <p>Are you sure to delete this institution ?</p>
                     <div className="modal-footer">
                         <button type="button" className="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" onClick={destroyUser} className="btn bg-gradient-danger">Delete</button>
